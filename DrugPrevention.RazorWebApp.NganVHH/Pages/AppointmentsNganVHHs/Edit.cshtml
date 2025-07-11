@@ -1,0 +1,916 @@
+﻿@page "/AppointmentsNganVHH/Update"
+@model DrugPrevention.RazorWebApp.NganVHH.Pages.AppointmentsNganVHHs.EditModel
+
+@{
+	ViewData["Title"] = "Chỉnh Sửa Cuộc Hẹn";
+}
+
+<style>
+	.appointment-container {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		min-height: 100vh;
+		padding: 1rem 0;
+	}
+
+	.appointment-card {
+		background: rgba(255, 255, 255, 0.95);
+		backdrop-filter: blur(10px);
+		border-radius: 20px;
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		overflow: hidden;
+		transition: all 0.3s ease;
+	}
+
+		.appointment-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+		}
+
+	.card-header-custom {
+		background: linear-gradient(135deg, #E67E22 0%, #D35400 100%);
+		color: white;
+		padding: 1.5rem;
+		text-align: center;
+		position: relative;
+		overflow: hidden;
+	}
+
+		.card-header-custom::before {
+			content: '';
+			position: absolute;
+			top: -50%;
+			left: -50%;
+			width: 200%;
+			height: 200%;
+			background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+			animation: floatAnimation 6s ease-in-out infinite;
+		}
+
+	@@keyframes floatAnimation {
+		0%, 100% {
+			transform: translateY(0px) rotate(0deg);
+		}
+
+		50% {
+			transform: translateY(-10px) rotate(180deg);
+		}
+	}
+
+	.card-header-custom h2 {
+		margin: 0;
+		font-size: 1.8rem;
+		font-weight: 700;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+		position: relative;
+		z-index: 1;
+	}
+
+	.card-header-custom .subtitle {
+		margin-top: 0.3rem;
+		font-size: 0.95rem;
+		opacity: 0.9;
+		position: relative;
+		z-index: 1;
+	}
+
+	.card-body-custom {
+		padding: 1.5rem;
+		background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+	}
+
+	.form-columns {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.5rem;
+	}
+
+	.form-column-full {
+		grid-column: 1 / -1;
+	}
+
+	.form-group-custom {
+		margin-bottom: 1.2rem;
+		position: relative;
+	}
+
+	.form-label-custom {
+		font-weight: 600;
+		color: #2c3e50;
+		margin-bottom: 0.75rem;
+		display: flex;
+		align-items: center;
+		font-size: 1rem;
+	}
+
+		.form-label-custom i {
+			margin-right: 0.5rem;
+			color: #4A90E2;
+			font-size: 1.1rem;
+		}
+
+	.form-control-custom, .form-select-custom {
+		border: 2px solid #e0e6ed;
+		border-radius: 8px;
+		padding: 0.6rem 1rem;
+		font-size: 0.9rem;
+		transition: all 0.3s ease;
+		background: white;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+		/* Fix cho dropdown options */
+		.form-select-custom option {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			font-size: 1rem;
+			padding: 0.5rem;
+			background: white;
+			color: #333;
+			text-rendering: optimizeLegibility;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			font-variant-ligatures: none;
+		}
+
+	/* Đảm bảo encoding UTF-8 đúng */
+	.form-select-custom {
+		text-rendering: optimizeLegibility;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		font-variant-ligatures: none;
+	}
+
+		.form-control-custom:focus, .form-select-custom:focus {
+			border-color: #4A90E2;
+			box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+			outline: none;
+			transform: translateY(-2px);
+		}
+
+		.form-control-custom:disabled, .form-select-custom:disabled {
+			background-color: #f8f9fa;
+			border-color: #e9ecef;
+			opacity: 0.65;
+		}
+
+	/* Input wrapper với icon bên trong */
+	.input-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	.input-icon {
+		position: absolute;
+		left: 1rem;
+		top: 50%;
+		transform: translateY(-50%);
+		color: #4A90E2;
+		font-size: 1.1rem;
+		z-index: 10;
+		pointer-events: none;
+		transition: all 0.3s ease;
+	}
+
+	.textarea-icon {
+		top: 1.2rem;
+		transform: none;
+	}
+
+	.input-wrapper .form-control,
+	.input-wrapper .form-select {
+		padding-left: 3rem;
+		transition: all 0.3s ease;
+	}
+
+	.input-wrapper:hover .input-icon {
+		color: #357ABD;
+		transform: translateY(-50%) scale(1.1);
+	}
+
+	.input-wrapper .textarea-icon:hover {
+		transform: scale(1.1);
+	}
+
+	.input-wrapper:focus-within .input-icon {
+		color: #357ABD;
+		text-shadow: 0 0 8px rgba(74, 144, 226, 0.4);
+	}
+
+	.radio-group-custom {
+		display: flex;
+		gap: 1.5rem;
+		margin-top: 0.5rem;
+	}
+
+	.radio-item-custom {
+		display: flex;
+		align-items: center;
+		background: white;
+		padding: 0.5rem 1rem;
+		border-radius: 8px;
+		border: 2px solid #e0e6ed;
+		transition: all 0.3s ease;
+		cursor: pointer;
+		flex: 1;
+		justify-content: center;
+	}
+
+		.radio-item-custom:hover {
+			border-color: #4A90E2;
+			background: #f0f7ff;
+			transform: translateY(-2px);
+		}
+
+		.radio-item-custom input[type="radio"] {
+			margin-right: 0.5rem;
+			accent-color: #4A90E2;
+		}
+
+			.radio-item-custom input[type="radio"]:checked + label {
+				color: #4A90E2;
+				font-weight: 600;
+			}
+
+		.radio-item-custom.checked {
+			border-color: #4A90E2;
+			background: linear-gradient(135deg, #f0f7ff 0%, #e1efff 100%);
+			box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+		}
+
+		.radio-item-custom i {
+			transition: all 0.3s ease;
+		}
+
+		.radio-item-custom:hover i {
+			transform: scale(1.2);
+		}
+
+		.radio-item-custom.checked i {
+			transform: scale(1.1);
+			text-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+		}
+
+	.textarea-custom {
+		min-height: 80px;
+		resize: vertical;
+	}
+
+	.btn-group-custom {
+		display: flex;
+		gap: 0.8rem;
+		justify-content: center;
+		padding: 1.2rem;
+		background: #f8f9fa;
+		border-top: 1px solid #e9ecef;
+		flex-wrap: wrap;
+	}
+
+	.btn-primary-custom {
+		background: #4A90E2;
+		border: none;
+		padding: 0.875rem 2rem;
+		border-radius: 8px;
+		font-weight: 600;
+		font-size: 0.95rem;
+		color: white;
+		transition: all 0.3s ease;
+		box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+		min-width: 160px;
+		text-align: center;
+		position: relative;
+		overflow: hidden;
+	}
+
+		.btn-primary-custom::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(255, 255, 255, 0.1);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		.btn-primary-custom:hover::before {
+			opacity: 1;
+		}
+
+		.btn-primary-custom:hover {
+			background: #357ABD;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 16px rgba(74, 144, 226, 0.4);
+		}
+
+		.btn-primary-custom:active {
+			transform: translateY(0);
+			box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+		}
+
+	.btn-secondary-custom {
+		background: #6c757d;
+		border: none;
+		padding: 0.875rem 2rem;
+		border-radius: 8px;
+		font-weight: 600;
+		font-size: 0.95rem;
+		color: white;
+		text-decoration: none;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.3s ease;
+		box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+		min-width: 160px;
+		position: relative;
+		overflow: hidden;
+	}
+
+		.btn-secondary-custom::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(255, 255, 255, 0.1);
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		.btn-secondary-custom:hover::before {
+			opacity: 1;
+		}
+
+		.btn-secondary-custom:hover {
+			background: #5a6268;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 16px rgba(108, 117, 125, 0.4);
+			color: white;
+			text-decoration: none;
+		}
+
+		.btn-secondary-custom:active {
+			transform: translateY(0);
+			box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+		}
+
+		/* Simple focus states */
+		.btn-primary-custom:focus,
+		.btn-secondary-custom:focus {
+			outline: none;
+			box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.25);
+		}
+
+		.btn-secondary-custom:focus {
+			box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.25);
+		}
+
+	.error-message {
+		color: #dc3545;
+		font-size: 0.875rem;
+		margin-top: 0.25rem;
+		display: none;
+		align-items: center;
+	}
+
+		.error-message.show {
+			display: flex;
+		}
+
+		.error-message i {
+			margin-right: 0.25rem;
+		}
+
+	.alert-custom {
+		border-radius: 12px;
+		border: none;
+		box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+	}
+
+	/* Ẩn validation errors mặc định */
+	.field-validation-error {
+		display: none !important;
+	}
+	
+	/* Ẩn server-side validation errors cho custom fields */
+	span[data-valmsg-for="AppointmentsNganVHH.ConsultationType"] .field-validation-error,
+	span[data-valmsg-for="AppointmentsNganVHH.IsInterpreterNeeded"] .field-validation-error {
+		display: none !important;
+	}
+
+	/* Custom validation display */
+	.form-control-custom.is-invalid,
+	.form-select-custom.is-invalid {
+		border-color: #dc3545;
+		box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+	}
+
+	@@media (max-width: 768px) {
+		.appointment-container {
+			padding: 0.5rem;
+		}
+
+		.card-body-custom {
+			padding: 1rem;
+		}
+
+		.form-columns {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+
+		.radio-group-custom {
+			flex-direction: column;
+		}
+
+		.btn-group-custom {
+			flex-direction: column;
+			align-items: center;
+			gap: 1rem;
+			padding: 1rem;
+		}
+
+		.btn-primary-custom,
+		.btn-secondary-custom {
+			width: 100%;
+			max-width: 280px;
+			min-width: auto;
+			padding: 0.6rem 1.2rem;
+			font-size: 0.85rem;
+		}
+
+			.btn-primary-custom:hover,
+			.btn-secondary-custom:hover {
+				transform: translateY(-1px);
+			}
+
+		.card-header-custom h2 {
+			font-size: 1.5rem;
+		}
+
+		.card-header-custom .subtitle {
+			font-size: 0.85rem;
+		}
+
+		.form-group-custom {
+			margin-bottom: 1rem;
+		}
+	}
+</style>
+
+<div class="appointment-container">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-8 col-xl-7">
+				<div class="appointment-card">
+					<div class="card-header-custom">
+						<h2><i class="fas fa-edit me-3"></i>Chỉnh Sửa Cuộc Hẹn</h2>
+						<p class="subtitle">Cập nhật thông tin cuộc hẹn tư vấn</p>
+					</div>
+
+					<div class="card-body-custom">
+						<form method="post" novalidate>
+							<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-custom" style="display: none;"></div>
+							<input type="hidden" asp-for="AppointmentsNganVHH.AppointmentNganVHHID" />
+
+							<div class="form-columns">
+								<div class="form-group-custom form-column-full">
+									<label asp-for="AppointmentsNganVHH.AppointmentNganVHHID" class="form-label-custom">
+										<i class="fas fa-hashtag"></i>AppointmentNganVHHID
+									</label>
+									<input asp-for="AppointmentsNganVHH.AppointmentNganVHHID" class="form-control form-control-custom" readonly />
+									<span asp-validation-for="AppointmentsNganVHH.AppointmentNganVHHID" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom">
+									<label asp-for="AppointmentsNganVHH.UserID" class="form-label-custom">
+										<i class="fas fa-user"></i>UserID
+									</label>
+									<select asp-for="AppointmentsNganVHH.UserID" class="form-select form-select-custom" asp-items="ViewBag.UserID" id="AppointmentsNganVHH_UserID">
+										<option value="">👤 Chọn người cần tư vấn</option>
+									</select>
+									<span asp-validation-for="AppointmentsNganVHH.UserID" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom">
+									<label asp-for="AppointmentsNganVHH.ConsultantID" class="form-label-custom">
+										<i class="fas fa-user-md"></i>ConsultantID
+									</label>
+									<select asp-for="AppointmentsNganVHH.ConsultantID" class="form-select form-select-custom" asp-items="ViewBag.ConsultantID" id="AppointmentsNganVHH_ConsultantID">
+										<option value="">🩺 Chọn chuyên gia tư vấn</option>
+									</select>
+									<span asp-validation-for="AppointmentsNganVHH.ConsultantID" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom">
+									<label asp-for="AppointmentsNganVHH.AppointmentDateTime" class="form-label-custom">
+										<i class="fas fa-clock"></i>AppointmentDateTime
+									</label>
+									<input asp-for="AppointmentsNganVHH.AppointmentDateTime" type="datetime-local" class="form-control form-control-custom" id="AppointmentsNganVHH_AppointmentDateTime" />
+									<span asp-validation-for="AppointmentsNganVHH.AppointmentDateTime" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom">
+									<label asp-for="AppointmentsNganVHH.Duration" class="form-label-custom">
+										<i class="fas fa-hourglass-half"></i>Duration
+									</label>
+									<select asp-for="AppointmentsNganVHH.Duration" class="form-select form-select-custom" id="AppointmentsNganVHH_Duration">
+										<option value="30">30 phút</option>
+										<option value="45">45 phút</option>
+										<option value="60">60 phút</option>
+										<option value="75">75 phút</option>
+										<option value="90">90 phút</option>
+										<option value="120">120 phút</option>
+									</select>
+									<span asp-validation-for="AppointmentsNganVHH.Duration" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom form-column-full">
+									<label asp-for="AppointmentsNganVHH.ConsultationType" class="form-label-custom">
+										<i class="fas fa-video"></i>ConsultationType
+									</label>
+									<div class="radio-group-custom">
+										<div class="radio-item-custom">
+											<input asp-for="AppointmentsNganVHH.ConsultationType" value="Online" type="radio" class="form-check-input" id="ConsultationType_Online" />
+											<label class="form-check-label" for="ConsultationType_Online">
+												<i class="me-2 text-primary"></i>Trực Tuyến
+											</label>
+										</div>
+										<div class="radio-item-custom">
+											<input asp-for="AppointmentsNganVHH.ConsultationType" value="In-person" type="radio" class="form-check-input" id="ConsultationType_Inperson" />
+											<label class="form-check-label" for="ConsultationType_Inperson">
+												<i class="me-2 text-success"></i>Trực Tiếp
+											</label>
+										</div>
+									</div>
+									<span asp-validation-for="AppointmentsNganVHH.ConsultationType" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom">
+									<label asp-for="AppointmentsNganVHH.Status" class="form-label-custom">
+										<i class="fas fa-info-circle"></i>Status
+									</label>
+									<select asp-for="AppointmentsNganVHH.Status" class="form-select form-select-custom" id="AppointmentsNganVHH_Status">
+										<option value="Scheduled">📅 Đã Lên Lịch</option>
+										<option value="In-Progress">⚡ Đang Tiến Hành</option>
+										<option value="Completed">✅ Hoàn Thành</option>
+										<option value="Cancelled">❌ Đã Hủy</option>
+									</select>
+									<span asp-validation-for="AppointmentsNganVHH.Status" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom">
+									<label asp-for="AppointmentsNganVHH.AssessmentType" class="form-label-custom">
+										<i class="fas fa-clipboard-list"></i>AssessmentType
+									</label>
+									<input asp-for="AppointmentsNganVHH.AssessmentType" class="form-control form-control-custom" id="AppointmentsNganVHH_AssessmentType" placeholder="💭 Ví dụ: Tư vấn tâm lý, Tư vấn cai nghiện..." />
+									<span asp-validation-for="AppointmentsNganVHH.AssessmentType" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom">
+									<label asp-for="AppointmentsNganVHH.RiskLevel" class="form-label-custom">
+										<i class="fas fa-exclamation-triangle"></i>RiskLevel
+									</label>
+									<select asp-for="AppointmentsNganVHH.RiskLevel" class="form-select form-select-custom" id="AppointmentsNganVHH_RiskLevel">
+										<option value="Low">🟢 Thấp</option>
+										<option value="Medium">🟡 Trung Bình</option>
+										<option value="High">🔴 Cao</option>
+									</select>
+									<span asp-validation-for="AppointmentsNganVHH.RiskLevel" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom">
+									<label asp-for="AppointmentsNganVHH.FeedbackRating" class="form-label-custom">
+										<i class="fas fa-star"></i>FeedbackRating
+									</label>
+									<input asp-for="AppointmentsNganVHH.FeedbackRating" type="number" min="1" max="5" step="1" class="form-control form-control-custom" id="AppointmentsNganVHH_FeedbackRating" placeholder="Đánh giá từ 1-5 sao" />
+									<span asp-validation-for="AppointmentsNganVHH.FeedbackRating" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom form-column-full">
+									<label asp-for="AppointmentsNganVHH.PrimaryIssue" class="form-label-custom">
+										<i class="fas fa-comment-medical"></i>PrimaryIssue
+									</label>
+									<textarea asp-for="AppointmentsNganVHH.PrimaryIssue" class="form-control form-control-custom textarea-custom" rows="2" maxlength="255" id="AppointmentsNganVHH_PrimaryIssue" placeholder="Mô tả ngắn gọn vấn đề cần tư vấn..."></textarea>
+									<span asp-validation-for="AppointmentsNganVHH.PrimaryIssue" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom form-column-full">
+									<label asp-for="AppointmentsNganVHH.IsInterpreterNeeded" class="form-label-custom">
+										<i class="fas fa-language"></i>IsInterpreterNeeded
+									</label>
+									<div class="radio-group-custom">
+										<div class="radio-item-custom">
+											<input class="form-check-input" type="radio" asp-for="AppointmentsNganVHH.IsInterpreterNeeded" value="true" id="IsInterpreterNeeded_Yes" />
+											<label class="form-check-label" for="IsInterpreterNeeded_Yes">
+												<i class="me-2 text-primary"></i>Có cần
+											</label>
+										</div>
+										<div class="radio-item-custom">
+											<input class="form-check-input" type="radio" asp-for="AppointmentsNganVHH.IsInterpreterNeeded" value="false" id="IsInterpreterNeeded_No" />
+											<label class="form-check-label" for="IsInterpreterNeeded_No">
+												<i class="me-2 text-secondary"></i>Không cần
+											</label>
+										</div>
+									</div>
+									<span asp-validation-for="AppointmentsNganVHH.IsInterpreterNeeded" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom form-column-full">
+									<label asp-for="AppointmentsNganVHH.Notes" class="form-label-custom">
+										<i class="fas fa-sticky-note"></i>Notes
+									</label>
+									<textarea asp-for="AppointmentsNganVHH.Notes" class="form-control form-control-custom textarea-custom" rows="2" id="AppointmentsNganVHH_Notes" placeholder="Thông tin bổ sung, yêu cầu đặc biệt..."></textarea>
+									<span asp-validation-for="AppointmentsNganVHH.Notes" class="error-message"></span>
+								</div>
+
+								<div class="form-group-custom form-column-full">
+									<label asp-for="AppointmentsNganVHH.RecordingLink" class="form-label-custom">
+										<i class="fas fa-video"></i>RecordingLink
+									</label>
+									<input asp-for="AppointmentsNganVHH.RecordingLink" class="form-control form-control-custom" id="AppointmentsNganVHH_RecordingLink" placeholder="URL link ghi âm/video cuộc tư vấn" />
+									<span asp-validation-for="AppointmentsNganVHH.RecordingLink" class="error-message"></span>
+								</div>
+							</div>
+
+							<div class="btn-group-custom">
+								<button type="submit" class="btn btn-primary-custom">
+									<i class="fas fa-save me-2"></i>Lưu Thay Đổi
+								</button>
+								<input type="button" id="btnHubUpdate" value="💫 SignalR Hub" class="btn btn-primary-custom" />
+								<a asp-page="./Index" class="btn btn-secondary-custom">
+									<i class="fas fa-arrow-left me-2"></i>Quay Lại
+								</a>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/appointment-validate.js"></script>
+
+<script>
+		"use strict";
+
+	// Clear all error messages function
+	function clearAllErrors() {
+		document.querySelectorAll('.error-message.show').forEach(function(errorSpan) {
+			errorSpan.classList.remove('show');
+			errorSpan.innerHTML = '';
+		});
+		document.querySelectorAll('.is-invalid').forEach(function(input) {
+			input.classList.remove('is-invalid');
+		});
+	}
+
+	// Animation for radio buttons
+	document.addEventListener('DOMContentLoaded', function() {
+		// Clear any existing error messages on page load
+		clearAllErrors();
+		
+		// Disable ASP.NET Core client validation for specific fields
+		setTimeout(function() {
+			// Hide any server-generated validation errors
+			document.querySelectorAll('span[data-valmsg-for="AppointmentsNganVHH.ConsultationType"], span[data-valmsg-for="AppointmentsNganVHH.IsInterpreterNeeded"]').forEach(function(span) {
+				if (span.textContent && span.textContent.trim() !== '') {
+					span.style.display = 'none';
+				}
+			});
+		}, 100);
+		
+		const radioItems = document.querySelectorAll('.radio-item-custom');
+		radioItems.forEach(item => {
+			const radio = item.querySelector('input[type="radio"]');
+			if (radio.checked) {
+				item.classList.add('checked');
+			}
+
+			radio.addEventListener('change', function() {
+				// Remove checked class from all items in the same group
+				const groupName = this.name;
+				document.querySelectorAll(`input[name="${groupName}"]`).forEach(r => {
+					r.closest('.radio-item-custom').classList.remove('checked');
+				});
+
+				// Add checked class to current item
+				if (this.checked) {
+					item.classList.add('checked');
+				}
+				
+				// Clear error for this radio group when user makes selection
+				var errorSpan = document.querySelector('span[data-valmsg-for="' + this.name + '"]');
+				if (errorSpan) {
+					errorSpan.classList.remove('show');
+					errorSpan.innerHTML = '';
+				}
+			});
+		});
+		
+		// Clear errors when any input changes
+		document.querySelectorAll('input, select, textarea').forEach(function(input) {
+			input.addEventListener('change', function() {
+				var fieldName = this.name || this.id.replace('AppointmentsNganVHH_', 'AppointmentsNganVHH.');
+				var errorSpan = document.querySelector('span[data-valmsg-for="' + fieldName + '"]');
+				if (errorSpan) {
+					if (errorSpan.classList.contains('show')) {
+						errorSpan.classList.remove('show');
+						errorSpan.innerHTML = '';
+					}
+					// Also hide any server-side errors
+					errorSpan.style.display = 'none';
+				}
+				if (this.classList.contains('is-invalid')) {
+					this.classList.remove('is-invalid');
+				}
+			});
+		});
+		
+		// Force clear errors for pre-selected radio buttons
+		setTimeout(function() {
+			document.querySelectorAll('input[type="radio"]:checked').forEach(function(radio) {
+				var fieldName = radio.name;
+				var errorSpan = document.querySelector('span[data-valmsg-for="' + fieldName + '"]');
+				if (errorSpan) {
+					errorSpan.classList.remove('show');
+					errorSpan.innerHTML = '';
+					errorSpan.style.display = 'none';
+				}
+			});
+		}, 200);
+	});
+
+		var connection = new signalR.HubConnectionBuilder().withUrl("/DrugPreventionHub").build();
+
+		connection.start().then(function () {
+			console.log("Connected to the SignalR Hub");
+		}).catch(function (err) {
+			return console.error(err.toString());
+		});
+
+			document.getElementById("btnHubUpdate").addEventListener("click", function (event) {
+		// Clear all existing errors before validation
+		clearAllErrors();
+
+		if (typeof validateAppointmentForm === "function" && !validateAppointmentForm()) {
+				event.preventDefault();
+				return; // Không gửi dữ liệu nếu validate fail
+			}
+
+			var dataObj = JSON.stringify({
+				AppointmentNganVHHID: document.getElementById("AppointmentsNganVHH_AppointmentNganVHHID").value,
+				UserID: document.getElementById("AppointmentsNganVHH_UserID").value,
+				ConsultantID: document.getElementById("AppointmentsNganVHH_ConsultantID").value,
+				AppointmentDateTime: document.getElementById("AppointmentsNganVHH_AppointmentDateTime").value,
+				Duration: document.getElementById("AppointmentsNganVHH_Duration").value,
+				ConsultationType: document.querySelector('input[name="AppointmentsNganVHH.ConsultationType"]:checked').value,
+				AssessmentType: document.getElementById("AppointmentsNganVHH_AssessmentType").value,
+				IsInterpreterNeeded: document.querySelector('input[name="AppointmentsNganVHH.IsInterpreterNeeded"]:checked').value,
+				PrimaryIssue: document.getElementById("AppointmentsNganVHH_PrimaryIssue").value,
+				RiskLevel: document.getElementById("AppointmentsNganVHH_RiskLevel").value,
+				Status: document.getElementById("AppointmentsNganVHH_Status").value,
+				Notes: document.getElementById("AppointmentsNganVHH_Notes").value,
+				FeedbackRating: document.getElementById("AppointmentsNganVHH_FeedbackRating").value,
+				RecordingLink: document.getElementById("AppointmentsNganVHH_RecordingLink").value
+			});
+
+			console.log(dataObj);
+			alert("Update successfully!!")
+
+			// connection.invoke("HubCreate_AppointmentsNganVHH", dataObj).then(() => {
+			// 	window.location.href = "/AppointmentsNganVHH/Index";
+			// }).catch(function (err) {
+			// 	return console.error(err.toString());
+			// });
+			// event.preventDefault();
+			connection.invoke("HubUpdate_AppointmentsNganVHH", dataObj).catch(function (err) {
+				return console.error(err.toString());
+			});
+
+		});
+
+		function updateFieldAccessByStatus() {
+			var status = document.getElementById('AppointmentsNganVHH_Status').value;
+			// Danh sách id các trường
+			var ids = {
+				userId: 'AppointmentsNganVHH_UserID',
+				consultantId: 'AppointmentsNganVHH_ConsultantID',
+				dateTime: 'AppointmentsNganVHH_AppointmentDateTime',
+				duration: 'AppointmentsNganVHH_Duration',
+				consultOnline: 'ConsultationType_Online',
+				consultInperson: 'ConsultationType_Inperson',
+				assessmentType: 'AppointmentsNganVHH_AssessmentType',
+				riskLevel: 'AppointmentsNganVHH_RiskLevel',
+				primaryIssue: 'AppointmentsNganVHH_PrimaryIssue',
+				feedback: 'AppointmentsNganVHH_FeedbackRating',
+				interpreterYes: 'IsInterpreterNeeded_Yes',
+				interpreterNo: 'IsInterpreterNeeded_No',
+				notes: 'AppointmentsNganVHH_Notes',
+				recording: 'AppointmentsNganVHH_RecordingLink'
+			};
+			
+			// Ẩn tất cả error messages trước
+			clearAllErrors();
+			
+			// Disable tất cả trước
+			Object.values(ids).forEach(function(id) {
+				var el = document.getElementById(id);
+				if (el) el.disabled = true;
+			});
+			// Scheduled: enable tất cả trừ feedback, recording
+			if (status === 'Scheduled') {
+				[ids.userId, ids.consultantId, ids.dateTime, ids.duration, ids.consultOnline, ids.consultInperson, ids.assessmentType, ids.riskLevel, ids.primaryIssue, ids.interpreterYes, ids.interpreterNo, ids.notes].forEach(function(id) {
+					var el = document.getElementById(id);
+					if (el) el.disabled = false;
+				});
+			}
+			// In-Progress: chỉ enable Duration, AssessmentType, PrimaryIssue, RiskLevel, Notes, FeedbackRating, RecordingLink
+			else if (status === 'In-Progress') {
+				[ids.duration, ids.assessmentType, ids.primaryIssue, ids.riskLevel, ids.notes, ids.feedback, ids.recording].forEach(function(id) {
+					var el = document.getElementById(id);
+					if (el) el.disabled = false;
+				});
+			}
+			// Completed: chỉ enable FeedbackRating, RecordingLink, Notes
+			else if (status === 'Completed') {
+				[ids.feedback, ids.recording, ids.notes].forEach(function(id) {
+					var el = document.getElementById(id);
+					if (el) el.disabled = false;
+				});
+			}
+			// Cancelled: chỉ enable Notes
+			if (status === 'Cancelled') {
+				[ids.notes].forEach(function(id) {
+					var el = document.getElementById(id);
+					if (el) el.disabled = false;
+				});
+			}
+			// Luôn enable Status
+			var statusInput = document.getElementById('AppointmentsNganVHH_Status');
+			if (statusInput) statusInput.disabled = false;
+		}
+		document.getElementById('AppointmentsNganVHH_Status').addEventListener('change', updateFieldAccessByStatus);
+		document.addEventListener('DOMContentLoaded', updateFieldAccessByStatus);
+
+		// 1. Lưu lại dữ liệu gốc khi trang vừa load
+		var initialData = {};
+		document.addEventListener('DOMContentLoaded', function () {
+			var fields = [
+				'AppointmentsNganVHH_UserID',
+				'AppointmentsNganVHH_ConsultantID',
+				'AppointmentsNganVHH_AppointmentDateTime',
+				'AppointmentsNganVHH_Duration',
+				'ConsultationType_Online',
+				'ConsultationType_Inperson',
+				'AppointmentsNganVHH_AssessmentType',
+				'AppointmentsNganVHH_RiskLevel',
+				'AppointmentsNganVHH_PrimaryIssue',
+				'AppointmentsNganVHH_FeedbackRating',
+				'IsInterpreterNeeded_Yes',
+				'IsInterpreterNeeded_No',
+				'AppointmentsNganVHH_Notes',
+				'AppointmentsNganVHH_RecordingLink'
+			];
+			fields.forEach(function(id) {
+				var el = document.getElementById(id);
+				if (el) {
+					if (el.type === "radio" || el.type === "checkbox") {
+						initialData[id] = el.checked;
+					} else {
+						initialData[id] = el.value;
+					}
+				}
+			});
+		});
+
+		// 2. Khi đổi status, reset lại dữ liệu gốc
+		document.getElementById('AppointmentsNganVHH_Status').addEventListener('change', function () {
+			for (var id in initialData) {
+				var el = document.getElementById(id);
+				if (el) {
+					if (el.type === "radio" || el.type === "checkbox") {
+						el.checked = initialData[id];
+					} else {
+						el.value = initialData[id];
+					}
+				}
+			}
+			// Nếu có hàm updateFieldAccessByStatus thì gọi lại để cập nhật enable/disable
+			if (typeof updateFieldAccessByStatus === 'function') updateFieldAccessByStatus();
+		});
+</script>
+
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

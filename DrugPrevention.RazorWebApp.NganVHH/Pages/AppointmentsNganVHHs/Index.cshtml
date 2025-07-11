@@ -1,0 +1,1213 @@
+﻿@page "/AppointmentsNganVHH/Index"
+@model DrugPrevention.RazorWebApp.NganVHH.Pages.AppointmentsNganVHHs.IndexModel
+
+@{
+	ViewData["Title"] = "Danh Sách Cuộc Hẹn";
+}
+
+<style>
+	body {
+		background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+		min-height: 100vh;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	.hero-section {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		padding: 2rem 0;
+		margin-bottom: 2rem;
+		box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+	}
+
+	.hero-content {
+		text-align: center;
+		color: white;
+	}
+
+	.hero-title {
+		font-size: 2.2rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
+		text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+	}
+
+	.hero-subtitle {
+		font-size: 1rem;
+		opacity: 0.95;
+		margin-bottom: 0;
+	}
+
+	.main-container {
+		max-width: 95%;
+		margin: 0 auto;
+		padding: 0 15px;
+	}
+
+	.appointments-card {
+		background: white;
+		border-radius: 15px;
+		padding: 1.5rem;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.8);
+	}
+
+	.card-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 1.5rem;
+		padding-bottom: 1rem;
+		border-bottom: 2px solid #f8f9fa;
+	}
+
+	.card-title {
+		color: #2c3e50;
+		font-size: 1.6rem;
+		font-weight: 600;
+		margin: 0;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.create-btn {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		border: none;
+		border-radius: 8px;
+		padding: 10px 20px;
+		color: white;
+		text-decoration: none;
+		font-weight: 600;
+		transition: all 0.3s ease;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+	}
+
+	.create-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+		color: white;
+		text-decoration: none;
+	}
+
+	.table-container {
+		background: white;
+		border-radius: 10px;
+		overflow-x: auto;
+		overflow-y: visible;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+		border: 1px solid #e9ecef;
+		max-width: 100%;
+	}
+
+	.table-container::-webkit-scrollbar {
+		height: 12px;
+	}
+
+	.table-container::-webkit-scrollbar-track {
+		background: #f1f1f1;
+		border-radius: 10px;
+	}
+
+	.table-container::-webkit-scrollbar-thumb {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		border-radius: 10px;
+		border: 2px solid #f1f1f1;
+	}
+
+	.table-container::-webkit-scrollbar-thumb:hover {
+		background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+	}
+
+	.table {
+		margin: 0;
+		font-size: 0.95rem;
+		min-width: 1400px;
+		width: max-content;
+	}
+
+	.table thead th {
+		background: #343a40;
+		color: white;
+		border: none;
+		padding: 1.2rem 1rem;
+		font-weight: 600;
+		font-size: 0.9rem;
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: middle;
+	}
+
+	.table tbody td {
+		padding: 1.2rem 1rem;
+		vertical-align: middle;
+		border-color: #f1f3f4;
+		font-size: 0.9rem;
+		text-align: center;
+		white-space: nowrap;
+	}
+
+	.table tbody tr {
+		transition: all 0.2s ease;
+		border-bottom: 1px solid #f1f3f4;
+	}
+
+	.table tbody tr:hover {
+		background-color: #f8f9fa;
+	}
+
+	.table tbody tr:last-child {
+		border-bottom: none;
+	}
+
+	.status-badge {
+		padding: 0.4rem 0.8rem;
+		border-radius: 20px;
+		font-size: 0.8rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		display: inline-block;
+		min-width: 80px;
+	}
+
+	.status-scheduled {
+		background-color: #e3f2fd;
+		color: #1976d2;
+		border: 1px solid #bbdefb;
+	}
+
+	.status-in-progress {
+		background-color: #fff3e0;
+		color: #f57c00;
+		border: 1px solid #ffcc02;
+	}
+
+	.status-completed {
+		background-color: #e8f5e8;
+		color: #388e3c;
+		border: 1px solid #a5d6a7;
+	}
+
+	.status-cancelled {
+		background-color: #ffebee;
+		color: #d32f2f;
+		border: 1px solid #ef9a9a;
+	}
+
+	.risk-badge {
+		padding: 0.4rem 0.8rem;
+		border-radius: 15px;
+		font-size: 0.8rem;
+		font-weight: 600;
+		display: inline-block;
+		min-width: 60px;
+	}
+
+	.risk-low {
+		background-color: #e8f5e8;
+		color: #388e3c;
+		border: 1px solid #a5d6a7;
+	}
+
+	.risk-medium {
+		background-color: #fff3e0;
+		color: #f57c00;
+		border: 1px solid #ffcc02;
+	}
+
+	.risk-high {
+		background-color: #ffebee;
+		color: #d32f2f;
+		border: 1px solid #ef9a9a;
+	}
+
+	.duration-badge {
+		background-color: #f0f4f8;
+		color: #334155;
+		padding: 0.3rem 0.6rem;
+		border-radius: 12px;
+		font-weight: 600;
+		border: 1px solid #cbd5e1;
+	}
+
+	.action-cell {
+		min-width: 200px !important;
+		width: 200px;
+		white-space: normal !important;
+		padding: 0.8rem !important;
+	}
+
+	.action-buttons {
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		width: 100%;
+		min-width: 150px;
+	}
+
+	.action-btn {
+		padding: 0.5rem 0.8rem;
+		border-radius: 6px;
+		font-size: 0.8rem;
+		font-weight: 500;
+		text-decoration: none;
+		text-align: center;
+		transition: all 0.2s ease;
+		border: 1px solid;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.3rem;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.btn-edit {
+		background-color: #fff8e1;
+		color: #f57c00;
+		border-color: #ffb74d;
+	}
+
+	.btn-edit:hover {
+		background-color: #f57c00;
+		color: white;
+		text-decoration: none;
+	}
+
+	.btn-details {
+		background-color: #e3f2fd;
+		color: #1976d2;
+		border-color: #64b5f6;
+	}
+
+	.btn-details:hover {
+		background-color: #1976d2;
+		color: white;
+		text-decoration: none;
+	}
+
+	.btn-delete {
+		background-color: #ffebee;
+		color: #d32f2f;
+		border-color: #ef5350;
+	}
+
+	.btn-delete:hover {
+		background-color: #d32f2f;
+		color: white;
+		text-decoration: none;
+	}
+
+	.empty-state {
+		text-align: center;
+		padding: 4rem 2rem;
+		color: #6c757d;
+	}
+
+	.empty-state i {
+		font-size: 4rem;
+		margin-bottom: 1.5rem;
+		opacity: 0.6;
+		color: #9ca3af;
+	}
+
+	.empty-state h4 {
+		color: #374151;
+		margin-bottom: 0.5rem;
+	}
+
+	.empty-state p {
+		margin-bottom: 2rem;
+		color: #6b7280;
+	}
+
+	.datetime-cell {
+		min-width: 160px;
+		text-align: left !important;
+	}
+
+	.email-cell {
+		max-width: 180px;
+		text-align: left !important;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.consultation-type-cell {
+		min-width: 120px;
+	}
+
+	.assessment-type-cell {
+		min-width: 100px;
+	}
+
+	/* Tooltip for email cells */
+	.email-cell:hover {
+		position: relative;
+		overflow: visible;
+	}
+
+	.stats-row {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 1.5rem;
+		gap: 1rem;
+	}
+
+	.stat-card {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+		padding: 1rem;
+		border-radius: 10px;
+		text-align: center;
+		flex: 1;
+		box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+	}
+
+	.stat-number {
+		font-size: 1.8rem;
+		font-weight: 700;
+		margin-bottom: 0.2rem;
+	}
+
+	.stat-label {
+		font-size: 0.9rem;
+		opacity: 0.9;
+	}
+
+	.scroll-hint {
+		text-align: center;
+		padding: 0.5rem;
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		color: white;
+		font-size: 0.85rem;
+		border-radius: 0 0 10px 10px;
+		margin-top: -1px;
+		opacity: 0.9;
+	}
+
+	.scroll-hint i {
+		margin: 0 0.5rem;
+		animation: bounceHorizontal 2s ease-in-out infinite;
+	}
+
+	@@keyframes bounceHorizontal {
+		0%, 20%, 50%, 80%, 100% {
+			transform: translateX(0);
+		}
+		40% {
+			transform: translateX(-5px);
+		}
+		60% {
+			transform: translateX(5px);
+		}
+	}
+
+	@@media (max-width: 1200px) {
+		.main-container {
+			max-width: 98%;
+		}
+		
+		.table {
+			min-width: 1400px;
+		}
+		
+		.scroll-hint {
+			display: block;
+		}
+	}
+
+	@@media (min-width: 1201px) {
+		.scroll-hint {
+			display: none;
+		}
+	}
+
+	/* Search Bar Styles */
+	.search-section {
+		background: rgba(255, 255, 255, 0.95);
+		border-radius: 15px;
+		padding: 1.5rem;
+		margin-bottom: 1.5rem;
+		box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+		border: 1px solid rgba(102, 126, 234, 0.1);
+	}
+
+	.search-title {
+		color: #2c3e50;
+		font-size: 1.3rem;
+		font-weight: 600;
+		margin-bottom: 1rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.search-form {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr auto;
+		gap: 1rem;
+		align-items: end;
+	}
+
+	.form-group-search {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.search-label {
+		color: #495057;
+		font-weight: 600;
+		margin-bottom: 0.5rem;
+		font-size: 0.9rem;
+	}
+
+	.search-input {
+		border: 2px solid #e9ecef;
+		border-radius: 8px;
+		padding: 0.75rem 1rem;
+		font-size: 0.9rem;
+		transition: all 0.3s ease;
+		background: white;
+	}
+
+	.search-input:focus {
+		border-color: #667eea;
+		box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+		outline: none;
+	}
+
+	.search-buttons {
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.search-btn {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		border: none;
+		border-radius: 8px;
+		padding: 0.75rem 1.5rem;
+		color: white;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+	}
+
+	.search-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+	}
+
+	.clear-btn {
+		background: #6c757d;
+		border: none;
+		border-radius: 8px;
+		padding: 0.75rem 1.5rem;
+		color: white;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		text-decoration: none;
+		box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+	}
+
+	.clear-btn:hover {
+		background: #5a6268;
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(108, 117, 125, 0.5);
+		color: white;
+		text-decoration: none;
+	}
+
+	.search-results {
+		margin-top: 1rem;
+		padding: 0.75rem 1rem;
+		background: rgba(102, 126, 234, 0.1);
+		border-radius: 8px;
+		color: #495057;
+		font-weight: 500;
+	}
+
+	@@media (max-width: 768px) {
+		.hero-title {
+			font-size: 1.8rem;
+		}
+		
+		.appointments-card {
+			padding: 1rem;
+			margin: 0 5px;
+		}
+		
+		.card-header {
+			flex-direction: column;
+			gap: 1rem;
+			text-align: center;
+		}
+		
+		.action-buttons {
+			flex-direction: row;
+			min-width: 280px;
+			flex-wrap: wrap;
+		}
+
+		.action-btn {
+			flex: 1;
+			min-width: 85px;
+		}
+
+		.stats-row {
+			flex-direction: column;
+		}
+
+		.search-form {
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+
+		.search-buttons {
+			justify-content: center;
+		}
+	}
+
+	/* Pagination Styles */
+	.pagination-container {
+		background: rgba(255, 255, 255, 0.95);
+		border-radius: 15px;
+		padding: 1.5rem;
+		margin-top: 1.5rem;
+		box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+		border: 1px solid rgba(102, 126, 234, 0.1);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+
+	.pagination-info {
+		color: #6c757d;
+		font-size: 0.95rem;
+		font-weight: 500;
+	}
+
+	.pagination-info strong {
+		color: #495057;
+	}
+
+	.pagination-nav {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.pagination-nav .page-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 38px;
+		height: 38px;
+		border: 2px solid #e9ecef;
+		border-radius: 8px;
+		color: #495057;
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 0.9rem;
+		transition: all 0.3s ease;
+		background: white;
+	}
+
+	.pagination-nav .page-link:hover {
+		border-color: #667eea;
+		color: #667eea;
+		background: #f8f9ff;
+		transform: translateY(-1px);
+		text-decoration: none;
+	}
+
+	.pagination-nav .page-link.current {
+		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+		border-color: #667eea;
+		color: white;
+		box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+	}
+
+	.pagination-nav .page-link.disabled {
+		border-color: #e9ecef;
+		color: #adb5bd;
+		background: #f8f9fa;
+		cursor: not-allowed;
+		opacity: 0.6;
+	}
+
+	.pagination-nav .page-link.disabled:hover {
+		transform: none;
+		box-shadow: none;
+		border-color: #e9ecef;
+		color: #adb5bd;
+		background: #f8f9fa;
+	}
+
+	.pagination-nav .page-link.prev,
+	.pagination-nav .page-link.next {
+		width: auto;
+		padding: 0 1rem;
+		gap: 0.5rem;
+	}
+
+	.pagination-ellipsis {
+		color: #adb5bd;
+		font-weight: 600;
+		font-size: 0.9rem;
+		display: flex;
+		align-items: center;
+		height: 38px;
+		padding: 0 0.5rem;
+	}
+
+	@@media (max-width: 768px) {
+		.pagination-container {
+			flex-direction: column;
+			text-align: center;
+		}
+
+		.pagination-nav {
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.pagination-nav .page-link {
+			width: 32px;
+			height: 32px;
+			font-size: 0.8rem;
+		}
+
+		.pagination-nav .page-link.prev,
+		.pagination-nav .page-link.next {
+			padding: 0 0.8rem;
+		}
+	}
+</style>
+
+<div class="hero-section">
+	<div class="hero-content">
+		<h1 class="hero-title">
+			<i class="fas fa-calendar-check"></i>
+			Quản Lý Cuộc Hẹn
+		</h1>
+		<p class="hero-subtitle">Hệ thống quản lý cuộc hẹn tư vấn phòng chống tệ nạn xã hội</p>
+	</div>
+</div>
+
+<div class="main-container">
+	<div class="appointments-card">
+		@if (Model.AppointmentsNganVHH != null && Model.AppointmentsNganVHH.Any())
+		{
+			<div class="stats-row">
+				<div class="stat-card">
+					<div class="stat-number">@Model.TotalItems</div>
+					<div class="stat-label">Tổng Cuộc Hẹn</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-number">@Model.AppointmentsNganVHH.Count(x => x.Status == "Scheduled")</div>
+					<div class="stat-label">Đã Lên Lịch (Trang)</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-number">@Model.AppointmentsNganVHH.Count(x => x.Status == "Completed")</div>
+					<div class="stat-label">Hoàn Thành (Trang)</div>
+				</div>
+				<div class="stat-card">
+					<div class="stat-number">@Model.AppointmentsNganVHH.Count(x => x.Status == "In-Progress")</div>
+					<div class="stat-label">Đang Diễn Ra (Trang)</div>
+				</div>
+			</div>
+		}
+
+		<!-- Search Section -->
+		<div class="search-section">
+			<h3 class="search-title">
+				<i class="fas fa-search"></i>
+				Tìm Kiếm Cuộc Hẹn
+			</h3>
+			<form method="get" class="search-form">
+				<input type="hidden" name="PageNumber" value="1" />
+				<div class="form-group-search">
+					<label class="search-label" for="SearchPrimaryIssue">@Html.DisplayNameFor(model => model.AppointmentsNganVHH[0].PrimaryIssue)</label>
+					<input type="text" 
+						   id="SearchPrimaryIssue" 
+						   name="SearchPrimaryIssue" 
+						   value="@Model.SearchPrimaryIssue" 
+						   class="search-input" 
+						   placeholder="Nhập vấn đề chính cần tìm..." />
+				</div>
+				<div class="form-group-search">
+					<label class="search-label" for="SearchDuration">@Html.DisplayNameFor(model => model.AppointmentsNganVHH[0].Duration)</label>
+					<input type="number" 
+						   id="SearchDuration" 
+						   name="SearchDuration" 
+						   value="@Model.SearchDuration" 
+						   class="search-input" 
+						   placeholder="Nhập số phút..." 
+						   min="30" 
+						   max="480" />
+				</div>
+				<div class="form-group-search">
+					<label class="search-label" for="SearchSpecialization">@Html.DisplayName("Specialization")</label>
+					<input type="text" 
+						   id="SearchSpecialization" 
+						   name="SearchSpecialization" 
+						   value="@Model.SearchSpecialization" 
+						   class="search-input" 
+						   placeholder="Nhập chuyên môn tư vấn..." />
+				</div>
+				<div class="search-buttons">
+					<button type="submit" class="search-btn">
+						<i class="fas fa-search"></i>
+						Tìm Kiếm
+					</button>
+					<a href="@Url.Page("Index")" class="clear-btn">
+						<i class="fas fa-times"></i>
+						Xóa Bộ Lọc
+					</a>
+				</div>
+			</form>
+			
+			@if (!string.IsNullOrEmpty(Model.SearchPrimaryIssue) || Model.SearchDuration.HasValue || !string.IsNullOrEmpty(Model.SearchSpecialization))
+			{
+				<div class="search-results">
+					<i class="fas fa-info-circle"></i>
+					Tìm thấy <strong>@Model.TotalItems</strong> cuộc hẹn phù hợp với điều kiện tìm kiếm.
+					@if (Model.TotalPages > 1)
+					{
+						<span>Hiển thị trang <strong>@Model.PageNumber</strong> / <strong>@Model.TotalPages</strong>.</span>
+					}
+				</div>
+			}
+		</div>
+
+		<div class="card-header">
+			<h2 class="card-title">
+				<i class="fas fa-list"></i>
+				Danh Sách Cuộc Hẹn
+			</h2>
+			<a asp-page="Create" class="create-btn">
+				<i class="fas fa-plus"></i>
+				Tạo Cuộc Hẹn Mới
+			</a>
+		</div>
+
+		@if (Model.AppointmentsNganVHH != null && Model.AppointmentsNganVHH.Any())
+		{
+			<div class="table-container">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>@Html.DisplayNameFor(model => model.AppointmentsNganVHH[0].AppointmentDateTime)</th>
+							<th>@Html.DisplayNameFor(model => model.AppointmentsNganVHH[0].Duration)</th>
+							<th>@Html.DisplayNameFor(model => model.AppointmentsNganVHH[0].ConsultationType)</th>
+							<th>@Html.DisplayNameFor(model => model.AppointmentsNganVHH[0].Status)</th>
+							<th>@Html.DisplayNameFor(model => model.AppointmentsNganVHH[0].AssessmentType)</th>
+							<th>@Html.DisplayNameFor(model => model.AppointmentsNganVHH[0].RiskLevel)</th>
+							<th>@Html.DisplayName("Consultant Email")</th>
+							<th>@Html.DisplayName("User Email")</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody id="appointmentsNganVHHsTBodyId">
+						@foreach (var item in Model.AppointmentsNganVHH)
+						{
+							<tr id="@item.AppointmentNganVHHID">
+								<td class="datetime-cell">
+									<i class="fas fa-calendar text-muted me-1"></i>
+									@item.AppointmentDateTime.ToString("dd/MM/yyyy HH:mm")
+								</td>
+								<td>
+									<span class="duration-badge">
+										@Html.DisplayFor(m => item.Duration) phút
+									</span>
+								</td>
+								<td class="consultation-type-cell">@Html.DisplayFor(m => item.ConsultationType)</td>
+								<td>
+									<span class="status-badge 
+										@(item.Status == "Scheduled" ? "status-scheduled" : 
+										  item.Status == "In-Progress" ? "status-in-progress" : 
+										  item.Status == "Completed" ? "status-completed" : "status-cancelled")">
+										@(item.Status == "Scheduled" ? "📅 Đã Lên Lịch" :
+										  item.Status == "In-Progress" ? "⚡ Đang Tiến Hành" :
+										  item.Status == "Completed" ? "✅ Hoàn Thành" :
+										  item.Status == "Cancelled" ? "❌ Đã Hủy" : item.Status)
+									</span>
+								</td>
+								<td class="assessment-type-cell">@Html.DisplayFor(m => item.AssessmentType)</td>
+								<td>
+									@if (!string.IsNullOrEmpty(item.RiskLevel))
+									{
+										<span class="risk-badge 
+											@(item.RiskLevel == "Low" ? "risk-low" : 
+											  item.RiskLevel == "Medium" ? "risk-medium" : "risk-high")">
+											@(item.RiskLevel == "Low" ? "🟢 Thấp" :
+											  item.RiskLevel == "Medium" ? "🟡 Trung Bình" :
+											  item.RiskLevel == "High" ? "🔴 Cao" : item.RiskLevel)
+										</span>
+									}
+									else
+									{
+										<span class="text-muted">Chưa đánh giá</span>
+									}
+								</td>
+								<td class="email-cell" title="@item.Consultant?.User?.Email">
+									@Html.DisplayFor(m => item.Consultant.User.Email)
+								</td>
+								<td class="email-cell" title="@item.User?.Email">
+									@Html.DisplayFor(m => item.User.Email)
+								</td>
+								<td class="action-cell">
+									<div class="action-buttons">
+										<a asp-page="./Edit" asp-route-id="@item.AppointmentNganVHHID" class="action-btn btn-edit">
+											<i class="fas fa-edit"></i> Sửa
+										</a>
+										<a asp-page="./Details" asp-route-id="@item.AppointmentNganVHHID" class="action-btn btn-details">
+											<i class="fas fa-eye"></i> Chi Tiết
+										</a>
+										<a asp-page="./Delete" asp-route-id="@item.AppointmentNganVHHID" class="action-btn btn-delete">
+											<i class="fas fa-trash"></i> Xóa
+										</a>
+									</div>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			<div class="scroll-hint">
+				<i class="fas fa-arrows-alt-h"></i>
+				Kéo thanh cuộn để xem thêm thông tin
+				<i class="fas fa-arrows-alt-h"></i>
+			</div>
+		}
+		else
+		{
+			<div class="empty-state">
+				<i class="fas fa-calendar-times"></i>
+				<h4>Chưa có cuộc hẹn nào</h4>
+				<p>Hãy tạo cuộc hẹn đầu tiên để bắt đầu quản lý hệ thống</p>
+				<a asp-page="Create" class="create-btn">
+					<i class="fas fa-plus"></i>
+					Tạo Cuộc Hẹn Đầu Tiên
+				</a>
+			</div>
+		}
+
+		@* Pagination *@
+		@if (Model.TotalPages > 1)
+		{
+			<div class="pagination-container">
+				<div class="pagination-info">
+					Hiển thị <strong>@((Model.PageNumber - 1) * Model.PageSize + 1)</strong> đến 
+					<strong>@Math.Min(Model.PageNumber * Model.PageSize, Model.TotalItems)</strong> 
+					trong tổng số <strong>@Model.TotalItems</strong> cuộc hẹn
+				</div>
+				<nav class="pagination-nav">
+					@* Previous button *@
+					@if (Model.HasPreviousPage)
+					{
+						<a asp-page="./Index" 
+						   asp-route-pageNumber="@(Model.PageNumber - 1)"
+						   asp-route-searchPrimaryIssue="@Model.SearchPrimaryIssue"
+						   asp-route-searchDuration="@Model.SearchDuration"
+						   asp-route-searchSpecialization="@Model.SearchSpecialization"
+						   class="page-link prev">
+							<i class="fas fa-chevron-left"></i>
+							Trước
+						</a>
+					}
+					else
+					{
+						<span class="page-link prev disabled">
+							<i class="fas fa-chevron-left"></i>
+							Trước
+						</span>
+					}
+
+					@* Page numbers *@
+					@{
+						int startPage = Math.Max(1, Model.PageNumber - 2);
+						int endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+						
+						// Adjust range if we're near the beginning or end
+						if (endPage - startPage < 4)
+						{
+							if (startPage == 1)
+							{
+								endPage = Math.Min(Model.TotalPages, startPage + 4);
+							}
+							else if (endPage == Model.TotalPages)
+							{
+								startPage = Math.Max(1, endPage - 4);
+							}
+						}
+					}
+
+					@* First page and ellipsis *@
+					@if (startPage > 1)
+					{
+						<a asp-page="./Index" 
+						   asp-route-pageNumber="1"
+						   asp-route-searchPrimaryIssue="@Model.SearchPrimaryIssue"
+						   asp-route-searchDuration="@Model.SearchDuration"
+						   asp-route-searchSpecialization="@Model.SearchSpecialization"
+						   class="page-link">1</a>
+						
+						@if (startPage > 2)
+						{
+							<span class="pagination-ellipsis">...</span>
+						}
+					}
+
+					@* Page number range *@
+					@for (int i = startPage; i <= endPage; i++)
+					{
+						if (i == Model.PageNumber)
+						{
+							<span class="page-link current">@i</span>
+						}
+						else
+						{
+							<a asp-page="./Index" 
+							   asp-route-pageNumber="@i"
+							   asp-route-searchPrimaryIssue="@Model.SearchPrimaryIssue"
+							   asp-route-searchDuration="@Model.SearchDuration"
+							   asp-route-searchSpecialization="@Model.SearchSpecialization"
+							   class="page-link">@i</a>
+						}
+					}
+
+					@* Last page and ellipsis *@
+					@if (endPage < Model.TotalPages)
+					{
+						@if (endPage < Model.TotalPages - 1)
+						{
+							<span class="pagination-ellipsis">...</span>
+						}
+						
+						<a asp-page="./Index" 
+						   asp-route-pageNumber="@Model.TotalPages"
+						   asp-route-searchPrimaryIssue="@Model.SearchPrimaryIssue"
+						   asp-route-searchDuration="@Model.SearchDuration"
+						   asp-route-searchSpecialization="@Model.SearchSpecialization"
+						   class="page-link">@Model.TotalPages</a>
+					}
+
+					@* Next button *@
+					@if (Model.HasNextPage)
+					{
+						<a asp-page="./Index" 
+						   asp-route-pageNumber="@(Model.PageNumber + 1)"
+						   asp-route-searchPrimaryIssue="@Model.SearchPrimaryIssue"
+						   asp-route-searchDuration="@Model.SearchDuration"
+						   asp-route-searchSpecialization="@Model.SearchSpecialization"
+						   class="page-link next">
+							Sau
+							<i class="fas fa-chevron-right"></i>
+						</a>
+					}
+					else
+					{
+						<span class="page-link next disabled">
+							Sau
+							<i class="fas fa-chevron-right"></i>
+						</span>
+					}
+				</nav>
+			</div>
+		}
+	</div>
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+
+<script>
+	"use strict";
+
+	// Hàm format datetime để đồng nhất với format từ database (dd/MM/yyyy HH:mm)
+	function formatDateTime(dateString) {
+		const date = new Date(dateString);
+		const day = String(date.getDate()).padStart(2, '0');
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const year = date.getFullYear();
+		const hours = String(date.getHours()).padStart(2, '0');
+		const minutes = String(date.getMinutes()).padStart(2, '0');
+		return `${day}/${month}/${year} ${hours}:${minutes}`;
+	}
+
+	var connection = new signalR.HubConnectionBuilder().withUrl("/DrugPreventionHub").build();
+
+	connection.start().then(function () {
+		console.log("Connected to the SignalR Hub");
+	}).catch(function (err) {
+		return console.error(err.toString());
+	});
+
+	connection.on("Receiver_DeleteAppointments", function (AppointmentsNganVHHID) {
+		$('#appointmentsNganVHHsTBodyId').find(`tr[id='${AppointmentsNganVHHID}']`).fadeOut(300, function() {
+			$(this).remove();
+			updateStats();
+		});
+	});
+
+	connection.on("Receiver_CreateAppointments", function (item) {
+		console.log(item);
+
+		// Format datetime để giống với format từ database
+		const appointmentDate = item.appointmentDateTime ? formatDateTime(item.appointmentDateTime) : '';
+		
+		// Determine status class
+		const statusClass = item.status === "Scheduled" ? "status-scheduled" : 
+						   item.status === "In-Progress" ? "status-in-progress" : 
+						   item.status === "Completed" ? "status-completed" : "status-cancelled";
+		
+		// Determine risk class
+		const riskClass = item.riskLevel === "Low" ? "risk-low" : 
+						 item.riskLevel === "Medium" ? "risk-medium" : "risk-high";
+
+		var trAppointment = `
+			<tr id="${item.appointmentNganVHHID}" style="display: none;">
+				<td class="datetime-cell">
+					<i class="fas fa-calendar text-muted me-1"></i>
+					${appointmentDate}
+				</td>
+				<td>
+					<span class="duration-badge">
+						${item.duration || ''} phút
+					</span>
+				</td>
+				<td class="consultation-type-cell">${item.consultationType || ''}</td>
+				<td>
+					<span class="status-badge ${statusClass}">
+						${item.status === "Scheduled" ? "📅 Đã Lên Lịch" :
+						  item.status === "In-Progress" ? "⚡ Đang Tiến Hành" :
+						  item.status === "Completed" ? "✅ Hoàn Thành" :
+						  item.status === "Cancelled" ? "❌ Đã Hủy" : item.status || ''}
+					</span>
+				</td>
+				<td class="assessment-type-cell">${item.assessmentType || ''}</td>
+				<td>
+					${item.riskLevel ? `<span class="risk-badge ${riskClass}">${
+						item.riskLevel === "Low" ? "🟢 Thấp" :
+						item.riskLevel === "Medium" ? "🟡 Trung Bình" :
+						item.riskLevel === "High" ? "🔴 Cao" : item.riskLevel
+					}</span>` : '<span class="text-muted">Chưa đánh giá</span>'}
+				</td>
+				<td class="email-cell" title="${item.consultantEmail || ''}">${item.consultantEmail || ''}</td>
+				<td class="email-cell" title="${item.userEmail || ''}">${item.userEmail || ''}</td>
+				<td class="action-cell">
+					<div class="action-buttons">
+						<a href="/AppointmentsNganVHH/Update?id=${item.appointmentNganVHHID}" class="action-btn btn-edit">
+							<i class="fas fa-edit"></i> Sửa
+						</a>
+						<a href="/AppointmentsNganVHH/Details?id=${item.appointmentNganVHHID}" class="action-btn btn-details">
+							<i class="fas fa-eye"></i> Chi Tiết
+						</a>
+						<a href="/AppointmentsNganVHH/Delete?id=${item.appointmentNganVHHID}" class="action-btn btn-delete">
+							<i class="fas fa-trash"></i> Xóa
+						</a>
+					</div>
+				</td>
+			</tr>
+		`;
+
+		$('#appointmentsNganVHHsTBodyId').prepend(trAppointment);
+		$(`#appointmentsNganVHHsTBodyId tr#${item.appointmentNganVHHID}`).fadeIn(500);
+		updateStats();
+	});
+
+	connection.on("Receiver_UpdateAppointments", function (item) {
+		console.log(item);
+
+		// Format datetime để giống với format từ database
+		const appointmentDate = item.appointmentDateTime ? formatDateTime(item.appointmentDateTime) : '';
+		
+		// Determine status class
+		const statusClass = item.status === "Scheduled" ? "status-scheduled" : 
+						   item.status === "In-Progress" ? "status-in-progress" : 
+						   item.status === "Completed" ? "status-completed" : "status-cancelled";
+		
+		// Determine risk class
+		const riskClass = item.riskLevel === "Low" ? "risk-low" : 
+						 item.riskLevel === "Medium" ? "risk-medium" : "risk-high";
+
+		var trAppointment = `
+			<tr id="${item.appointmentNganVHHID}">
+				<td class="datetime-cell">
+					<i class="fas fa-calendar text-muted me-1"></i>
+					${appointmentDate}
+				</td>
+				<td>
+					<span class="duration-badge">
+						${item.duration || ''} phút
+					</span>
+				</td>
+				<td class="consultation-type-cell">${item.consultationType || ''}</td>
+				<td>
+					<span class="status-badge ${statusClass}">
+						${item.status === "Scheduled" ? "📅 Đã Lên Lịch" :
+						  item.status === "In-Progress" ? "⚡ Đang Tiến Hành" :
+						  item.status === "Completed" ? "✅ Hoàn Thành" :
+						  item.status === "Cancelled" ? "❌ Đã Hủy" : item.status || ''}
+					</span>
+				</td>
+				<td class="assessment-type-cell">${item.assessmentType || ''}</td>
+				<td>
+					${item.riskLevel ? `<span class="risk-badge ${riskClass}">${
+						item.riskLevel === "Low" ? "🟢 Thấp" :
+						item.riskLevel === "Medium" ? "🟡 Trung Bình" :
+						item.riskLevel === "High" ? "🔴 Cao" : item.riskLevel
+					}</span>` : '<span class="text-muted">Chưa đánh giá</span>'}
+				</td>
+				<td class="email-cell" title="${item.consultantEmail || ''}">${item.consultantEmail || ''}</td>
+				<td class="email-cell" title="${item.userEmail || ''}">${item.userEmail || ''}</td>
+				<td class="action-cell">
+					<div class="action-buttons">
+						<a href="/AppointmentsNganVHH/Update?id=${item.appointmentNganVHHID}" class="action-btn btn-edit">
+							<i class="fas fa-edit"></i> Sửa
+						</a>
+						<a href="/AppointmentsNganVHH/Details?id=${item.appointmentNganVHHID}" class="action-btn btn-details">
+							<i class="fas fa-eye"></i> Chi Tiết
+						</a>
+						<a href="/AppointmentsNganVHH/Delete?id=${item.appointmentNganVHHID}" class="action-btn btn-delete">
+							<i class="fas fa-trash"></i> Xóa
+						</a>
+					</div>
+				</td>
+			</tr>
+		`;
+
+		var $existingRow = $(`#appointmentsNganVHHsTBodyId tr#${item.appointmentNganVHHID}`);
+
+		if ($existingRow.length) {
+			$existingRow.fadeOut(300, function() {
+				$(this).replaceWith(trAppointment);
+				$(`#appointmentsNganVHHsTBodyId tr#${item.appointmentNganVHHID}`).fadeIn(500);
+				updateStats();
+			});
+		} else {
+			$('#appointmentsNganVHHsTBodyId').prepend(trAppointment);
+			$(`#appointmentsNganVHHsTBodyId tr#${item.appointmentNganVHHID}`).fadeIn(500);
+			updateStats();
+		}
+	});
+
+	// Function to update statistics dynamically
+	function updateStats() {
+		// This would normally recalculate from the DOM, but for simplicity
+		// we'll let the page refresh handle stats updates
+	}
+</script>
