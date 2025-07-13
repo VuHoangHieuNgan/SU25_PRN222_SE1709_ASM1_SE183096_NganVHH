@@ -34,17 +34,25 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages
         public string Password { get; set; } = string.Empty;
 
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            return CheckLogin();
+
         }
 
         public async Task<IActionResult> OnPost()
         {
+            var loginCheck = CheckLogin();
+            if (loginCheck is RedirectToPageResult)
+            {
+                return loginCheck;
+            }
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-                       
+
             var userAccount = await _userAccountService.GetUserAccountAsync(UserName, Password);
 
             if (userAccount != null)
@@ -76,8 +84,14 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages
 
         public IActionResult OnGetGoogleLogin()
         {
-            var properties = new AuthenticationProperties 
-            { 
+            var loginCheck = CheckLogin();
+            if (loginCheck is RedirectToPageResult)
+            {
+                return loginCheck;
+            }
+
+            var properties = new AuthenticationProperties
+            {
                 RedirectUri = Url.Page("/Login", "GoogleResponse"),
                 Items =
                 {
@@ -89,6 +103,12 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages
 
         public async Task<IActionResult> OnGetGoogleResponse()
         {
+            var loginCheck = CheckLogin();
+            if (loginCheck is RedirectToPageResult)
+            {
+                return loginCheck;
+            }
+
             try
             {
                 var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
@@ -148,8 +168,8 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages
         private async Task<System_UserAccount> CreateOrGetGoogleUser(string email, string name, string userName)
         {
             // Kiểm tra user đã tồn tại chưa dựa trên email
-            var existingUser = await _userAccountService.GetUserByEmailAsync(email); 
-            
+            var existingUser = await _userAccountService.GetUserByEmailAsync(email);
+
             if (existingUser != null)
             {
                 return existingUser;
@@ -172,8 +192,17 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages
 
             // Tạo user mới trong database
             await _userAccountService.CreateUserAccountAsync(newUser);
-            
+
             return newUser;
         }
-    }    
+
+        private IActionResult CheckLogin()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/AppointmentsNganVHHs/Index");
+            }
+            return Page();
+        }
+    }
 }

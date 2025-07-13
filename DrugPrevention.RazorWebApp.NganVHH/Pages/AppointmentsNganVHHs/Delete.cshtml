@@ -767,6 +767,11 @@
 		return console.error(err.toString());
 	});
 
+	connection.on("Receiver_DeleteAppointments", function (AppointmentsNganVHHID) {
+			document.getElementById("AppointmentsNganVHH_Container").innerHTML =
+				'<div class="card-body-custom text-center"><div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Cuộc hẹn này đã bị xóa</div></div>';
+		});
+
 	connection.on("Receiver_UpdateAppointments", function (item) {
 		// Cập nhật AppointmentDateTime
 		var dateTimeElement = document.querySelector("#AppointmentsNganVHH_AppointmentDateTime .detail-value");

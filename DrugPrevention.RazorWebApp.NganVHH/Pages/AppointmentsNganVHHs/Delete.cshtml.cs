@@ -31,8 +31,6 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages.AppointmentsNganVHHs
                 return NotFound();
             }
 
-            //var appointmentsnganvhh = await _context.AppointmentsNganVHHs.FirstOrDefaultAsync(m => m.AppointmentNganVHHID == id);
-
             var appointmentsnganvhh = await _appointmentsNganVHHService.GetByIdAsync(id.Value);
 
             if (appointmentsnganvhh == null)
@@ -52,13 +50,11 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages.AppointmentsNganVHHs
             {
                 return NotFound();
             }
-
-            //var appointmentsnganvhh = await _context.AppointmentsNganVHHs.FindAsync(id);
+            
             var appointmentsnganvhh = await _appointmentsNganVHHService.GetByIdAsync(id.Value);
             if (appointmentsnganvhh != null)
             {
                 AppointmentsNganVHH = appointmentsnganvhh;
-                //_context.AppointmentsNganVHHs.Remove(AppointmentsNganVHH);
                 var result = await _appointmentsNganVHHService.DeleteAsync(id.Value);
             }
 

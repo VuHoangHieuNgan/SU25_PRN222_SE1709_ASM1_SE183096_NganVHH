@@ -395,7 +395,7 @@
 	.field-validation-error {
 		display: none !important;
 	}
-	
+
 	/* Ẩn server-side validation errors cho custom fields */
 	span[data-valmsg-for="AppointmentsNganVHH.ConsultationType"] .field-validation-error,
 	span[data-valmsg-for="AppointmentsNganVHH.IsInterpreterNeeded"] .field-validation-error {
@@ -472,7 +472,7 @@
 						<p class="subtitle">Cập nhật thông tin cuộc hẹn tư vấn</p>
 					</div>
 
-					<div class="card-body-custom">
+					<div class="card-body-custom" id="AppointmentsNganVHH_Container">
 						<form method="post" novalidate>
 							<div asp-validation-summary="ModelOnly" class="alert alert-danger alert-custom" style="display: none;"></div>
 							<input type="hidden" asp-for="AppointmentsNganVHH.AppointmentNganVHHID" />
@@ -676,7 +676,7 @@
 	document.addEventListener('DOMContentLoaded', function() {
 		// Clear any existing error messages on page load
 		clearAllErrors();
-		
+
 		// Disable ASP.NET Core client validation for specific fields
 		setTimeout(function() {
 			// Hide any server-generated validation errors
@@ -686,7 +686,7 @@
 				}
 			});
 		}, 100);
-		
+
 		const radioItems = document.querySelectorAll('.radio-item-custom');
 		radioItems.forEach(item => {
 			const radio = item.querySelector('input[type="radio"]');
@@ -705,7 +705,7 @@
 				if (this.checked) {
 					item.classList.add('checked');
 				}
-				
+
 				// Clear error for this radio group when user makes selection
 				var errorSpan = document.querySelector('span[data-valmsg-for="' + this.name + '"]');
 				if (errorSpan) {
@@ -714,7 +714,7 @@
 				}
 			});
 		});
-		
+
 		// Clear errors when any input changes
 		document.querySelectorAll('input, select, textarea').forEach(function(input) {
 			input.addEventListener('change', function() {
@@ -733,7 +733,7 @@
 				}
 			});
 		});
-		
+
 		// Force clear errors for pre-selected radio buttons
 		setTimeout(function() {
 			document.querySelectorAll('input[type="radio"]:checked').forEach(function(radio) {
@@ -747,6 +747,8 @@
 			});
 		}, 200);
 	});
+
+
 
 		var connection = new signalR.HubConnectionBuilder().withUrl("/DrugPreventionHub").build();
 
@@ -794,7 +796,11 @@
 			connection.invoke("HubUpdate_AppointmentsNganVHH", dataObj).catch(function (err) {
 				return console.error(err.toString());
 			});
+		});
 
+		connection.on("Receiver_DeleteAppointments", function (AppointmentsNganVHHID) {
+			document.getElementById("AppointmentsNganVHH_Container").innerHTML =
+				'<div class="card-body-custom text-center"><div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Cuộc hẹn này đã bị xóa</div></div>';
 		});
 
 		function updateFieldAccessByStatus() {
@@ -816,10 +822,10 @@
 				notes: 'AppointmentsNganVHH_Notes',
 				recording: 'AppointmentsNganVHH_RecordingLink'
 			};
-			
+
 			// Ẩn tất cả error messages trước
 			clearAllErrors();
-			
+
 			// Disable tất cả trước
 			Object.values(ids).forEach(function(id) {
 				var el = document.getElementById(id);

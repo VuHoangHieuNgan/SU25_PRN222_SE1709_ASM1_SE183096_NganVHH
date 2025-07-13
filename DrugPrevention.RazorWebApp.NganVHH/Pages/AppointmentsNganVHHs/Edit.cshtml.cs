@@ -79,8 +79,6 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages.AppointmentsNganVHHs
 
             try
             {
-                // Debug logging to check FeedbackRating value
-                Console.WriteLine($"Edit Page - FeedbackRating before update: {AppointmentsNganVHH.FeedbackRating}");
                 await _appointmentsNganVHHService.UpdateAsync(AppointmentsNganVHH);
             }
             catch (DbUpdateConcurrencyException)
