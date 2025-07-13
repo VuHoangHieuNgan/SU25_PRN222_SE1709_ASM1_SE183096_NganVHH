@@ -1,336 +1,365 @@
 ﻿<!DOCTYPE html>
 <html lang="vi" style="height: 100%; margin: 0; padding: 0;">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Drug Prevention System</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/DrugPrevention.RazorWebApp.NganVHH.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .navbar-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-            border: none !important;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
-            padding: 1rem 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .navbar-custom::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.05)"/></svg>') repeat;
-            animation: navParticles 8s ease-in-out infinite;
-        }
-        
-        @@keyframes navParticles {
-            0%, 100% { transform: translateX(0) translateY(0); }
-            50% { transform: translateX(-5px) translateY(-3px); }
-        }
-        
-        .navbar-brand-custom {
-            color: white !important;
-            font-weight: 800 !important;
-            font-size: 1.4rem !important;
-            text-decoration: none !important;
-            display: flex;
-            align-items: center;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .navbar-brand-custom:hover {
-            color: #f8f9fa !important;
-            transform: scale(1.05);
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-        }
-        
-        .navbar-brand-custom .brand-icon {
-            font-size: 1.8rem;
-            margin-right: 0.8rem;
-            animation: pulse 2s infinite;
-        }
-        
-        @@keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        .navbar-nav-custom .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-weight: 600 !important;
-            margin: 0 0.5rem;
-            padding: 0.6rem 1.2rem !important;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-        }
-        
-        .navbar-nav-custom .nav-link:hover {
-            color: white !important;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .navbar-nav-custom .nav-link.active {
-            color: white !important;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-        }
-        
-        .navbar-nav-custom .nav-link i {
-            margin-right: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        .navbar-toggler-custom {
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            padding: 0.5rem;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .navbar-toggler-custom:focus {
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
-        }
-        
-        .navbar-toggler-icon-custom {
-            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
-        }
-        
-        .user-info {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 25px;
-            padding: 0.6rem 1.2rem;
-            color: white;
-            font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            z-index: 1;
-            transition: all 0.3s ease;
-        }
-        
-        .user-info:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .user-info .user-name {
-            color: #ffd700;
-            font-weight: 700;
-        }
-        
-        .user-info .logout-link {
-            color: #ffcccb;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .user-info .logout-link:hover {
-            color: white;
-            text-decoration: underline;
-        }
-        
-        .main-content {
-            flex: 1 0 auto;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .container-fluid-custom {
-            padding: 0;
-            margin: 0;
-            max-width: 100%;
-        }
-        
-        .footer-custom {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 1rem 0;
-            margin-top: auto;
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        
-        .footer-custom::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></svg>') repeat;
-            animation: footerParticles 10s ease-in-out infinite;
-        }
-        
-        @@keyframes footerParticles {
-            0%, 100% { transform: translateX(0) translateY(0); }
-            50% { transform: translateX(10px) translateY(-5px); }
-        }
-        
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Drug Prevention System</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/DrugPrevention.RazorWebApp.NganVHH.styles.css" asp-append-version="true" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-        
-        .footer-copyright {
-            width: 100%;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Mobile Responsive */
-        @@media (max-width: 768px) {
-            .navbar-brand-custom {
-                font-size: 1.2rem !important;
-            }
-            
-            .navbar-brand-custom .brand-icon {
-                font-size: 1.4rem;
-                margin-right: 0.5rem;
-            }
-            
-            .navbar-nav-custom .nav-link {
-                margin: 0.2rem 0;
-                text-align: center;
-            }
-            
-            .user-info {
-                margin-top: 1rem;
-                text-align: center;
-                width: 100%;
-            }
-            
+	<style>
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+			margin: 0;
+			padding: 0;
+		}
 
-        }
-        
-        /* Smooth scroll */
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-        }
-    </style>
+		.navbar-custom {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+			border: none !important;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+			padding: 1rem 0;
+			position: relative;
+			overflow: hidden;
+		}
+
+			.navbar-custom::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.05)"/></svg>') repeat;
+				animation: navParticles 8s ease-in-out infinite;
+			}
+
+		@@keyframes navParticles {
+			0%, 100% {
+				transform: translateX(0) translateY(0);
+			}
+
+			50% {
+				transform: translateX(-5px) translateY(-3px);
+			}
+		}
+
+		.navbar-brand-custom {
+			color: white !important;
+			font-weight: 800 !important;
+			font-size: 1.4rem !important;
+			text-decoration: none !important;
+			display: flex;
+			align-items: center;
+			transition: all 0.3s ease;
+			position: relative;
+			z-index: 1;
+		}
+
+			.navbar-brand-custom:hover {
+				color: #f8f9fa !important;
+				transform: scale(1.05);
+				text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+			}
+
+			.navbar-brand-custom .brand-icon {
+				font-size: 1.8rem;
+				margin-right: 0.8rem;
+				animation: pulse 2s infinite;
+			}
+
+		@@keyframes pulse {
+			0%, 100% {
+				transform: scale(1);
+			}
+
+			50% {
+				transform: scale(1.1);
+			}
+		}
+
+		.navbar-nav-custom .nav-link {
+			color: rgba(255, 255, 255, 0.9) !important;
+			font-weight: 600 !important;
+			margin: 0 0.5rem;
+			padding: 0.6rem 1.2rem !important;
+			border-radius: 25px;
+			transition: all 0.3s ease;
+			position: relative;
+			z-index: 1;
+			display: flex;
+			align-items: center;
+		}
+
+			.navbar-nav-custom .nav-link:hover {
+				color: white !important;
+				background: rgba(255, 255, 255, 0.15);
+				backdrop-filter: blur(10px);
+				transform: translateY(-2px);
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+			}
+
+			.navbar-nav-custom .nav-link.active {
+				color: white !important;
+				background: rgba(255, 255, 255, 0.2);
+				backdrop-filter: blur(15px);
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+			}
+
+			.navbar-nav-custom .nav-link i {
+				margin-right: 0.5rem;
+				font-size: 1rem;
+			}
+
+		.navbar-toggler-custom {
+			border: 2px solid rgba(255, 255, 255, 0.3);
+			border-radius: 8px;
+			padding: 0.5rem;
+			position: relative;
+			z-index: 1;
+		}
+
+			.navbar-toggler-custom:focus {
+				box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+			}
+
+		.navbar-toggler-icon-custom {
+			background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+		}
+
+		.user-info {
+			background: rgba(255, 255, 255, 0.15);
+			backdrop-filter: blur(10px);
+			border-radius: 25px;
+			padding: 0.6rem 1.2rem;
+			color: white;
+			font-weight: 600;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			position: relative;
+			z-index: 1;
+			transition: all 0.3s ease;
+		}
+
+			.user-info:hover {
+				background: rgba(255, 255, 255, 0.2);
+				transform: translateY(-2px);
+				box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+			}
+
+			.user-info .user-name {
+				color: #ffd700;
+				font-weight: 700;
+			}
+
+			.user-info .logout-link {
+				color: #ffcccb;
+				text-decoration: none;
+				transition: color 0.3s ease;
+			}
+
+				.user-info .logout-link:hover {
+					color: white;
+					text-decoration: underline;
+				}
+
+		.main-content {
+			flex: 1 0 auto;
+			padding: 0;
+			margin: 0;
+		}
+
+		.container-fluid-custom {
+			padding: 0;
+			margin: 0;
+			max-width: 100%;
+		}
+
+		.footer-custom {
+			background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+			color: white;
+			padding: 1rem 0;
+			margin-top: auto;
+			position: relative;
+			overflow: hidden;
+			flex-shrink: 0;
+		}
+
+			.footer-custom::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></svg>') repeat;
+				animation: footerParticles 10s ease-in-out infinite;
+			}
+
+		@@keyframes footerParticles {
+			0%, 100% {
+				transform: translateX(0) translateY(0);
+			}
+
+			50% {
+				transform: translateX(10px) translateY(-5px);
+			}
+		}
+
+
+
+		.footer-copyright {
+			width: 100%;
+			text-align: center;
+			margin: 0;
+			padding: 0;
+			color: rgba(255, 255, 255, 0.8);
+			font-size: 0.9rem;
+			position: relative;
+			z-index: 1;
+		}
+
+		/* Mobile Responsive */
+		@@media (max-width: 768px) {
+			.navbar-brand-custom {
+				font-size: 1.2rem !important;
+			}
+
+				.navbar-brand-custom .brand-icon {
+					font-size: 1.4rem;
+					margin-right: 0.5rem;
+				}
+
+			.navbar-nav-custom .nav-link {
+				margin: 0.2rem 0;
+				text-align: center;
+			}
+
+			.user-info {
+				margin-top: 1rem;
+				text-align: center;
+				width: 100%;
+			}
+		}
+
+		/* Smooth scroll */
+		html {
+			scroll-behavior: smooth;
+		}
+
+		/* Custom scrollbar */
+		::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		::-webkit-scrollbar-track {
+			background: #f1f1f1;
+		}
+
+		::-webkit-scrollbar-thumb {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			border-radius: 4px;
+		}
+
+			::-webkit-scrollbar-thumb:hover {
+				background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+			}
+	</style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-custom">
-            <div class="container">
-                <a class="navbar-brand-custom" asp-area="" asp-page="/Index">
-                    <span class="brand-icon">🛡️</span>
-                    DrugPrevention.RazorWebApp.NganVHH
-                </a>
-                
-                <button class="navbar-toggler navbar-toggler-custom" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon navbar-toggler-icon-custom"></span>
-                </button>
-                
-                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-                    <ul class="navbar-nav navbar-nav-custom mx-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Index">
-                                <i class="fas fa-home"></i>Home
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/AppointmentsNganVHHs/Index">
-                                <i class="fas fa-calendar-alt"></i>Appointment
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Privacy">
-                                <i class="fas fa-shield-alt"></i>Privacy
-                            </a>
-                        </li>
-                    </ul>
-                    
-                    <div class="user-info">
-                        <i class="fas fa-user-circle me-2"></i>
-                        Welcome <span class="user-name">@Context.Request.Cookies["UserName"]</span>
-                        | <a href="/Account/Logout" class="logout-link"><i class="fas fa-sign-out-alt me-1"></i>Sign Out</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-    
-    <main class="main-content">
-        <div class="container-fluid-custom">
-            @RenderBody()
-        </div>
-    </main>
+	<header>
+		<nav class="navbar navbar-expand-lg navbar-custom">
+			<div class="container">
+				<a class="navbar-brand-custom" asp-area="" asp-page="/Index">
+					<span class="brand-icon">🛡️</span>
+					DrugPrevention.RazorWebApp.NganVHH
+				</a>
 
-    <footer class="footer-custom">
-        <div class="container">
-            <div class="footer-copyright">
-                © 2025 DrugPrevention.RazorWebApp.NganVHH - SE183096 NganVHH | Developed with ❤️ for social welfare
-            </div>
-        </div>
-    </footer>
+				<button class="navbar-toggler navbar-toggler-custom" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon navbar-toggler-icon-custom"></span>
+				</button>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+				<div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+					<ul class="navbar-nav navbar-nav-custom mx-auto">
+						<li class="nav-item">
+							<a class="nav-link" asp-area="" asp-page="/Index">
+								<i class="fas fa-home"></i>Home
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" asp-area="" asp-page="/AppointmentsNganVHHs/Index">
+								<i class="fas fa-calendar-alt"></i>Appointment
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" asp-area="" asp-page="/Privacy">
+								<i class="fas fa-shield-alt"></i>Privacy
+							</a>
+						</li>
+					</ul>
 
-    @await RenderSectionAsync("Scripts", required: false)
-    
-    <script>
-        // Active nav link highlighting
-        $(document).ready(function() {
-            var currentPath = window.location.pathname;
-            $('.navbar-nav-custom .nav-link').each(function() {
-                var linkPath = $(this).attr('href') || $(this).data('href');
-                if (currentPath === linkPath || (linkPath !== '/' && currentPath.indexOf(linkPath) === 0)) {
-                    $(this).addClass('active');
-                }
-            });
-        });
-    </script>
+					<ul class="navbar-nav flex-grow-0">
+						@if (User.Identity!.IsAuthenticated)
+						{
+							<li class="nav-item user-info">
+								<i class="fas fa-user-circle me-2"></i>
+								<span class="navbar-text text-dark">
+									Welcome <span class="user-name">@Context.Request.Cookies["UserName"]</span>
+									<a href="/Account/Logout" class="logout-link"><i class="fas fa-sign-out-alt me-1"></i>Sign Out</a>
+								</span>
+							</li>
+						}
+						else
+						{
+							@* NotAuthorized - User chưa đăng nhập *@
+							<li class="nav-item user-info">
+								<span class="navbar-text text-dark">
+									<a href="/Login" class="logout-link"><i class="fas fa-sign-in-alt me-1"></i>Sign In</a>
+								</span>
+							</li>
+						}
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+
+	<main class="main-content">
+		<div class="container-fluid-custom">
+			@RenderBody()
+		</div>
+	</main>
+
+	<footer class="footer-custom">
+		<div class="container">
+			<div class="footer-copyright">
+				© 2025 DrugPrevention.RazorWebApp.NganVHH - SE183096 NganVHH | Developed with ❤️ for social welfare
+			</div>
+		</div>
+	</footer>
+
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+
+	@await RenderSectionAsync("Scripts", required: false)
+
+	<script>
+		// Active nav link highlighting
+		$(document).ready(function() {
+			var currentPath = window.location.pathname;
+			$('.navbar-nav-custom .nav-link').each(function() {
+				var linkPath = $(this).attr('href') || $(this).data('href');
+				if (currentPath === linkPath || (linkPath !== '/' && currentPath.indexOf(linkPath) === 0)) {
+					$(this).addClass('active');
+				}
+			});
+		});
+	</script>
 </body>
 </html>

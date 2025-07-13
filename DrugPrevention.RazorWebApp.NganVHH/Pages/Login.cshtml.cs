@@ -130,7 +130,7 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages
 
                 // Tạo user account mới hoặc lấy existing user
                 var userName = email.Split('@')[0];
-                var user = await CreateOrGetGoogleUser(email, name, userName);
+                var user = await CreateOrGetGoogleUser(email, name!, userName);
 
                 // Tạo claims để đăng nhập
                 var claimsIdentity = new ClaimsIdentity(new[]
@@ -158,7 +158,7 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages
 
                 return RedirectToPage("/AppointmentsNganVHHs/Index");
             }
-            catch (Exception ex)
+            catch
             {
                 TempData["Message"] = "Có lỗi xảy ra trong quá trình đăng nhập Google.";
                 return Page();
@@ -198,7 +198,7 @@ namespace DrugPrevention.RazorWebApp.NganVHH.Pages
 
         private IActionResult CheckLogin()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity!.IsAuthenticated)
             {
                 return RedirectToPage("/AppointmentsNganVHHs/Index");
             }
